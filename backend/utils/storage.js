@@ -190,26 +190,6 @@ const swarmState = {
       }]
     ])
   },
-  products: new Map([
-    ['prod-1', {
-      id: 'prod-1',
-      name: 'Data Analysis Package',
-      description: 'Comprehensive data analysis by swarm agents',
-      price: 499.99,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    }]
-  ]),
-  listings: new Map([
-    ['list-1', {
-      id: 'list-1',
-      productId: 'prod-1',
-      agentId: 'agent-1',
-      status: 'active',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    }]
-  ]),
   chat: {
     conversations: new Map([
       ['conv-1', {
@@ -259,8 +239,7 @@ const swarmState = {
   security: {
     blockedIPs: new Set(),
     suspiciousActivities: []
-  },
-  passwordResetTokens: new Map()
+  }
 };
 
 module.exports = {
