@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useLocation, Link } from 'react-router-dom';
 import useApi from '../hooks/useApi';
 
 const AgentChat = () => {
@@ -12,6 +13,7 @@ const AgentChat = () => {
   const [loading, setLoading] = useState(true);
   
   const messagesEndRef = useRef(null);
+  const location = useLocation();
   const api = useApi();
 
   useEffect(() => {
@@ -46,8 +48,21 @@ const AgentChat = () => {
       setConversations(conversationsRes.data);
       setAgents(agentsRes.data);
       
-      // Select first conversation if available
-      if (conversationsRes.data.length > 0) {
+      // Deep link: if agent_id in query, start chat with that agent
+      const params = new URLSearchParams(location.search);
+      const agentIdParam = params.get('agent_id');
+      if (agentIdParam) {
+        const existing = conversationsRes.data.find(c => c.participants.includes(agentIdParam));
+        if (existing) {
+          setSelectedConversation(existing);
+        } else {
+          try {
+            const created = await api.post('/api/chat/conversations', { agent_id: agentIdParam });
+            setConversations(prev => [created.data, ...prev]);
+            setSelectedConversation(created.data);
+          } catch {}
+        }
+      } else if (conversationsRes.data.length > 0) {
         setSelectedConversation(conversationsRes.data[0]);
       }
     } catch (error) {
@@ -157,28 +172,36 @@ const AgentChat = () => {
                   </div>
                 ) : (
                   <div className="list-group list-group-flush">
-                    {conversations.map(conversation => (
-                      <div
-                        key={conversation.id}
-                        className={`list-group-item list-group-item-action cursor-pointer ${
-                          selectedConversation?.id === conversation.id ? 'active' : ''
-                        }`}
-                        onClick={() => setSelectedConversation(conversation)}
-                      >
-                        <div className="d-flex w-100 justify-content-between">
-                          <h6 className="mb-1">{conversation.title}</h6>
-                          <small>{new Date(conversation.lastActivity).toLocaleDateString()}</small>
+                    {conversations.map(conversation => {
+                      const unread = (conversation.messages || []).filter(m => m.status !== 'read' && m.senderType === 'agent').length;
+                      return (
+                        <div
+                          key={conversation.id}
+                          className={`list-group-item list-group-item-action cursor-pointer ${
+                            selectedConversation?.id === conversation.id ? 'active' : ''
+                          }`}
+                          onClick={() => setSelectedConversation(conversation)}
+                        >
+                          <div className="d-flex w-100 justify-content-between">
+                            <h6 className="mb-1">{conversation.title}</h6>
+                            <div className="d-flex align-items-center gap-2">
+                              {unread > 0 && (
+                                <span className="badge bg-danger">{unread}</span>
+                              )}
+                              <small>{new Date(conversation.lastActivity).toLocaleDateString()}</small>
+                            </div>
+                          </div>
+                          <p className="mb-1 text-muted small">
+                            {conversation.metadata?.agentName}
+                          </p>
+                          <small>
+                            <span className={`badge bg-${conversation.status === 'active' ? 'success' : 'secondary'}`}>
+                              {conversation.status}
+                            </span>
+                          </small>
                         </div>
-                        <p className="mb-1 text-muted small">
-                          {conversation.metadata?.agentName}
-                        </p>
-                        <small>
-                          <span className={`badge bg-${conversation.status === 'active' ? 'success' : 'secondary'}`}>
-                            {conversation.status}
-                          </span>
-                        </small>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </div>

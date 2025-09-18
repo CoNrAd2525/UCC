@@ -39,6 +39,33 @@ const Navigation = () => {
                 Dashboard
               </NavLink>
             </li>
+            <li className="nav-item dropdown">
+              <a className="nav-link dropdown-toggle" href="#" id="catalogDropdown" role="button" data-bs-toggle="dropdown">
+                <i className="fas fa-boxes me-1"></i>
+                Catalog
+              </a>
+              <ul className="dropdown-menu">
+                <li>
+                  <NavLink className={({ isActive }) => `dropdown-item ${isActive ? 'active' : ''}`} to="/catalog/products">Products</NavLink>
+                </li>
+                <li>
+                  <NavLink className={({ isActive }) => `dropdown-item ${isActive ? 'active' : ''}`} to="/catalog/listings">Listings</NavLink>
+                </li>
+              </ul>
+            </li>
+            {user?.role === 'admin' && (
+            <li className="nav-item dropdown">
+              <a className="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown">
+                <i className="fas fa-user-shield me-1"></i>
+                Admin
+              </a>
+              <ul className="dropdown-menu">
+                <li>
+                  <NavLink className={({ isActive }) => `dropdown-item ${isActive ? 'active' : ''}`} to="/admin/users">Users</NavLink>
+                </li>
+              </ul>
+            </li>
+            )}
             <li className="nav-item">
               <NavLink 
                 className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
@@ -73,6 +100,15 @@ const Navigation = () => {
               >
                 <i className="fas fa-chart-bar me-1"></i>
                 Analytics
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink 
+                className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                to="/revenue"
+              >
+                <i className="fas fa-cash-register me-1"></i>
+                Revenue
               </NavLink>
             </li>
             <li className="nav-item">

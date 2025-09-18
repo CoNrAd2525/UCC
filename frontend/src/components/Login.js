@@ -96,6 +96,10 @@ const Login = () => {
         
         <div className="login-demo-info">
           <hr />
+          <button className="btn btn-link p-0" onClick={() => window.location.href = '/reset'}>
+            Forgot your password?
+          </button>
+          <br />
           <small className="text-muted">
             <strong>Demo Credentials:</strong><br />
             Admin: admin / admin123<br />

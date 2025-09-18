@@ -12,6 +12,8 @@ const swarmRoutes = require('./swarm');
 const scanRoutes = require('./scan');
 const revenueRoutes = require('./revenue');
 const chatRoutes = require('./chat');
+const productsRoutes = require('./products');
+const listingsRoutes = require('./listings');
 
 const app = express();
 
@@ -40,6 +42,8 @@ app.use('/api/swarm', swarmRoutes);
 app.use('/api/scan', scanRoutes);
 app.use('/api/revenue', revenueRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/products', productsRoutes);
+app.use('/api/listings', listingsRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
